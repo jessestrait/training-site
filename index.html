@@ -2,21 +2,28 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Store 9337 Training</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0E0F13;--panel:#171922;--line:#262A38;--red:#FF1A1A;--blue:#0060FF;--yel:#FFE600;--tx:#F2F3F7;--dim:#8A8FA3}
+:root{--ink:#0E0F13;--panel:#171922;--line:#262A38;--red:#FF1A1A;--blue:#0060FF;--hblue:#1E9BF0;--yel:#FFE600;--tx:#F2F3F7;--dim:#8A8FA3}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--ink);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
 header{padding:56px 24px 40px;text-align:center;border-bottom:1px solid var(--line)}
-header b{font-weight:900;font-size:clamp(28px,5vw,42px);display:block;line-height:1.1}
+header b{font-family:'Poppins',sans-serif;font-weight:900;font-size:clamp(28px,5vw,42px);display:block;line-height:1.1;color:var(--hblue)}
 header b span{color:var(--red)}
 header small{color:var(--dim);font-weight:700;font-size:12px;letter-spacing:2px;display:block;margin-top:10px}
 main{flex:1;max-width:900px;margin:0 auto;padding:44px 24px;width:100%}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
-.card{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:22px;text-decoration:none;color:var(--tx);display:block;transition:border-color .15s}
-.card:hover{border-color:var(--blue)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:14px;text-decoration:none;color:var(--tx);
+  display:flex;flex-direction:column;overflow:hidden;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--blue);transform:translateY(-3px)}
+.thumb{position:relative;aspect-ratio:4/5;overflow:hidden;background:#000;border-bottom:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .25s,filter .25s;filter:brightness(.88)}
+.card:hover .thumb img{transform:scale(1.04);filter:brightness(1)}
+.thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(14,15,19,.92) 0%,rgba(14,15,19,0) 55%)}
+.bar{position:absolute;top:0;left:0;right:0;height:4px;z-index:1}
+.body{padding:18px 20px 22px}
 .card .tag{color:var(--red);font-weight:900;font-size:11px;letter-spacing:1.6px}
-.card h2{font-weight:900;font-size:19px;margin:8px 0 6px}
+.card h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:19px;margin:8px 0 6px;color:var(--hblue)}
 .card p{color:var(--dim);font-size:13.5px;line-height:1.5}
 .card .pages{margin-top:14px;color:var(--dim);font-weight:700;font-size:11px;letter-spacing:1px}
 .card.soon{opacity:.45;cursor:default;pointer-events:none;border-style:dashed}
@@ -31,28 +38,40 @@ footer span{color:var(--red)}
 <main>
 <div class="grid">
 <a class="card" href="essentials/">
+<div class="thumb"><div class="bar" style="background:var(--red)"></div><img src="essentials/pages/p01.jpg" alt="" loading="lazy"></div>
+<div class="body">
 <div class="tag">TRAINER GUIDE</div>
 <h2>In-Store Training Essentials</h2>
 <p>Program info, compliance, CSR &amp; Delivery Expert training, prep, Load Zone, and Go Zone.</p>
 <div class="pages">54 PAGES</div>
+</div>
 </a>
 <a class="card" href="activities/">
+<div class="thumb"><div class="bar" style="background:var(--blue)"></div><img src="activities/pages/p01.jpg" alt="" loading="lazy"></div>
+<div class="body">
 <div class="tag">ACTIVITIES WORKBOOK</div>
 <h2>Activities Guide</h2>
 <p>Hands-on worksheets and exercises pairing with the Essentials roadmap &mdash; compliance, CSR &amp; Delivery Expert, prep, Load Zone, and Go Zone.</p>
 <div class="pages">40 PAGES</div>
+</div>
 </a>
 <a class="card" href="csr/">
+<div class="thumb"><div class="bar" style="background:var(--yel)"></div><img src="csr/pages/p01.jpg" alt="" loading="lazy"></div>
+<div class="body">
 <div class="tag">CERTIFICATION BOOKLET</div>
 <h2>CSR Certification</h2>
 <p>Training plan, resources, and skills checks for Customer Service Expert, Prep, Load Zone, and Go Zone.</p>
 <div class="pages">12 PAGES</div>
+</div>
 </a>
 <a class="card" href="delivery-expert/">
+<div class="thumb"><div class="bar" style="background:var(--red)"></div><img src="delivery-expert/pages/p01.jpg" alt="" loading="lazy"></div>
+<div class="body">
 <div class="tag">CERTIFICATION BOOKLET</div>
 <h2>Delivery Expert Certification</h2>
 <p>Training plan, resources, and skills checks for Delivery Expert and Go Zone Product Expert.</p>
 <div class="pages">8 PAGES</div>
+</div>
 </a>
 </div>
 </main>
