@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Store 9337 Training — In-Store Training Essentials</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0E0F13;--panel:#171922;--line:#262A38;--red:#FF1A1A;--blue:#0060FF;--tx:#F2F3F7;--dim:#8A8FA3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--tx);font-family:'DM Sans',sans-serif}
+nav{width:280px;background:var(--panel);border-right:1px solid var(--line);padding:22px 0;
+  position:fixed;top:0;bottom:0;left:0;overflow-y:auto;z-index:20;transform:translateX(-100%);transition:transform .25s}
+nav.open{transform:none}
+.logo{padding:0 22px 18px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.logo b{font-weight:900;font-size:19px;line-height:1.15;display:block}
+.logo b span{color:var(--red)}
+.logo small{color:var(--dim);font-weight:700;font-size:11px;letter-spacing:1.6px}
+.grp{color:var(--dim);font-weight:900;font-size:10.5px;letter-spacing:2px;padding:16px 22px 6px}
+.item{display:block;padding:9px 22px;color:var(--tx);font-weight:500;font-size:14.5px;cursor:pointer;border-left:3px solid transparent}
+.item:hover{background:#1D2030;border-left-color:var(--red)}
+#burger{position:fixed;top:14px;left:14px;z-index:30;background:var(--red);border:none;
+  border-radius:10px;width:48px;height:48px;color:#fff;font-size:22px;font-weight:900;cursor:pointer}
+#scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:15}
+body.navopen #scrim{display:block}
+main{max-width:1020px;margin:0 auto;padding:74px clamp(14px,3vw,44px) 40px}
+.counter{text-align:center;color:var(--dim);font-weight:900;font-size:11px;letter-spacing:2px;margin-bottom:14px}
+.pgimg{width:100%;display:block;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+.navbtns{display:flex;gap:12px;margin-top:18px}
+.nb{flex:1;background:var(--panel);border:2px solid var(--line);border-radius:12px;color:var(--tx);
+  font:900 15px 'DM Sans',sans-serif;padding:16px;cursor:pointer;text-align:center}
+.nb:hover{border-color:var(--blue)} .nb:disabled{opacity:.3}
+footer{background:#000;text-align:center;padding:24px;font-weight:900;font-size:19px}
+footer span{color:var(--red)}
+</style></head><body>
+<button id="burger" onclick="tog()">&#9776;</button>
+<div id="scrim" onclick="tog()"></div>
+<nav id="nav">
+<div class="logo"><b>IN-STORE <span>TRAINING</span><br>ESSENTIALS</b><small>STORE 9337 · TRAINER GUIDE</small></div>
+<div class="grp">PROGRAM INFO</div><a class="item" onclick="jump(2)">Where to Begin</a><a class="item" onclick="jump(3)">Core Resources</a><a class="item" onclick="jump(4)">How to Use & Tips</a><a class="item" onclick="jump(5)">CSR Roadmap</a><a class="item" onclick="jump(6)">Delivery Expert Roadmap</a><a class="item" onclick="jump(7)">CSR Training Plan</a><a class="item" onclick="jump(10)">Delivery Expert Training Plan</a><div class="grp">COMPLIANCE</div><a class="item" onclick="jump(12)">Team Safety</a><a class="item" onclick="jump(13)">Food Safety</a><a class="item" onclick="jump(15)">Store Security</a><div class="grp">CSR & DELIVERY EXPERT</div><a class="item" onclick="jump(17)">Order Entry</a><a class="item" onclick="jump(18)">Easy Upsells</a><a class="item" onclick="jump(19)">Boxing & Receipts</a><a class="item" onclick="jump(21)">Circle of Operations</a><a class="item" onclick="jump(24)">Making Great Deliveries</a><a class="item" onclick="jump(27)">Delivery Safety</a><div class="grp">PREP</div><a class="item" onclick="jump(29)">Prep</a><a class="item" onclick="jump(30)">Bread Sides Prep</a><div class="grp">LOAD ZONE</div><a class="item" onclick="jump(32)">Dough Proofing</a><a class="item" onclick="jump(34)">Dough Stretching</a><a class="item" onclick="jump(35)">Saucing & Cheesing</a><a class="item" onclick="jump(38)">Order of Toppings - BYO</a><a class="item" onclick="jump(39)">Calibrate Your Hands</a><a class="item" onclick="jump(40)">Top Like a Pro</a><a class="item" onclick="jump(41)">Sides</a><a class="item" onclick="jump(43)">Snake Loading</a><a class="item" onclick="jump(45)">Load Captain</a><div class="grp">GO ZONE</div><a class="item" onclick="jump(46)">Oven Tending - Know It</a><a class="item" onclick="jump(49)">Oven Tending - Show It</a><a class="item" onclick="jump(51)">Pizza Grading Tool</a><a class="item" onclick="jump(52)">Go Captain</a>
+</nav>
+<main>
+<div class="counter" id="counter"></div>
+<img class="pgimg" id="pg" src="" alt="Training guide page">
+<div class="navbtns">
+<button class="nb" id="prev" onclick="step(-1)">&#9650; PREVIOUS</button>
+<button class="nb" id="next" onclick="step(1)">NEXT &#9660;</button>
+</div>
+</main>
+<footer>Dommm<span>ino's</span></footer>
+<script>
+const P=["pages/p01.jpg", "pages/p02.jpg", "pages/p03.jpg", "pages/p04.jpg", "pages/p05.jpg", "pages/p06.jpg", "pages/p07.jpg", "pages/p08.jpg", "pages/p09.jpg", "pages/p10.jpg", "pages/p11.jpg", "pages/p12.jpg", "pages/p13.jpg", "pages/p14.jpg", "pages/p15.jpg", "pages/p16.jpg", "pages/p17.jpg", "pages/p18.jpg", "pages/p19.jpg", "pages/p20.jpg", "pages/p21.jpg", "pages/p22.jpg", "pages/p23.jpg", "pages/p24.jpg", "pages/p25.jpg", "pages/p26.jpg", "pages/p27.jpg", "pages/p28.jpg", "pages/p29.jpg", "pages/p30.jpg", "pages/p31.jpg", "pages/p32.jpg", "pages/p33.jpg", "pages/p34.jpg", "pages/p35.jpg", "pages/p36.jpg", "pages/p37.jpg", "pages/p38.jpg", "pages/p39.jpg", "pages/p40.jpg", "pages/p41.jpg", "pages/p42.jpg", "pages/p43.jpg", "pages/p44.jpg", "pages/p45.jpg", "pages/p46.jpg", "pages/p47.jpg", "pages/p48.jpg", "pages/p49.jpg", "pages/p50.jpg", "pages/p51.jpg", "pages/p52.jpg", "pages/p53.jpg", "pages/p54.jpg"]; let i=0;
+function render(){
+ document.getElementById('pg').src=P[i];
+ document.getElementById('counter').textContent='PAGE '+(i+1)+' OF '+P.length;
+ document.getElementById('prev').disabled=i===0;
+ document.getElementById('next').disabled=i===P.length-1;
+ window.scrollTo({top:0});
+}
+function step(d){const n=i+d;if(n>=0&&n<P.length){i=n;render()}}
+function jump(idx){i=idx;render();tog()}
+function tog(){document.getElementById('nav').classList.toggle('open');document.body.classList.toggle('navopen')}
+render();
+</script>
+</body></html>
