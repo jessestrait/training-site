@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Store 9337 Training — Domino&trade; Product Tutorial Video</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0E0F13;--panel:#171922;--line:#262A38;--red:#FF1A1A;--blue:#0060FF;--hblue:#1E9BF0;--tx:#F2F3F7;--dim:#8A8FA3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--tx);font-family:'DM Sans',sans-serif}
+nav{width:280px;background:var(--panel);border-right:1px solid var(--line);padding:22px 0;
+  position:fixed;top:0;bottom:0;left:0;overflow-y:auto;z-index:20;transform:translateX(-100%);transition:transform .25s}
+nav.open{transform:none}
+.logo{padding:0 22px 18px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.logo b{font-family:'Poppins',sans-serif;font-weight:900;font-size:19px;line-height:1.15;display:block;color:var(--hblue)}
+.logo b span{color:var(--red)}
+.logo small{color:var(--dim);font-weight:700;font-size:11px;letter-spacing:1.6px}
+.grp{color:var(--dim);font-weight:900;font-size:10.5px;letter-spacing:2px;padding:16px 22px 6px}
+.item{display:block;padding:9px 22px;color:var(--tx);font-weight:500;font-size:14.5px;cursor:pointer;border-left:3px solid transparent;text-decoration:none}
+.item:hover{background:#1D2030;border-left-color:var(--red)}
+#burger{position:fixed;top:14px;left:14px;z-index:30;background:var(--red);border:none;
+  border-radius:10px;width:48px;height:48px;color:#fff;font-size:22px;font-weight:900;cursor:pointer}
+#scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:15}
+body.navopen #scrim{display:block}
+main{max-width:1020px;margin:0 auto;padding:74px clamp(14px,3vw,44px) 40px}
+.counter{text-align:center;color:var(--dim);font-weight:900;font-size:11px;letter-spacing:2px;margin-bottom:14px}
+.pgvid{width:100%;display:block;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.5);background:#000}
+.note{margin-top:18px;background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:18px 20px}
+.note b{font-family:'Poppins',sans-serif;font-weight:800;font-size:14px;color:var(--hblue);display:block;margin-bottom:6px}
+.note p{color:var(--dim);font-size:13.5px;line-height:1.55}
+footer{background:#000;text-align:center;padding:24px;font-weight:900;font-size:19px}
+footer span{color:var(--red)}
+</style></head><body>
+<button id="burger" onclick="tog()">&#9776;</button>
+<div id="scrim" onclick="tog()"></div>
+<nav id="nav">
+<div class="logo"><b>PRODUCT <span>TUTORIAL</span></b><small>STORE 9337 &middot; DOMINO&trade; LAUNCH KIT</small></div>
+<a class="item" href="../" style="border-left-color:var(--red);color:var(--red);font-weight:700">&#8592; ALL GUIDES</a>
+<div class="grp">RELATED</div>
+<a class="item" href="../playbook/">In-Store Training Playbook</a>
+<a class="item" href="../domino-job-aids/">Job Aids &amp; Cards</a>
+</nav>
+<main>
+<div class="counter">VIDEO &middot; 4 MIN 30 SEC</div>
+<video class="pgvid" id="vid" controls preload="metadata" playsinline poster="poster.jpg">
+  <source src="domino-product-tutorial.mp4" type="video/mp4">
+  Your browser can't play this video. Download it instead:
+  <a href="domino-product-tutorial.mp4">domino-product-tutorial.mp4</a>.
+</video>
+<div class="note">
+<b>Watch this before your training session</b>
+<p>The full product tutorial for the Domino&trade; launch &mdash; prep, assembly, bake, and
+post-bake, start to finish. Pair it with Step&nbsp;3 (Demonstrate) in the
+<a href="../playbook/" style="color:var(--hblue)">In-Store Training Playbook</a>, and keep the
+<a href="../domino-job-aids/" style="color:var(--hblue)">Job Aids &amp; Cards</a> open on the make line.</p>
+</div>
+</main>
+<footer>Dommm<span>ino's</span></footer>
+<script>
+function tog(){document.getElementById('nav').classList.toggle('open');document.body.classList.toggle('navopen')}
+</script>
+<script data-goatcounter="https://jesserstrait.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body></html>

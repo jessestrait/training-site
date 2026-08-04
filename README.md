@@ -10,11 +10,13 @@ Owner: Jesse Strait, GM.
 
 - `index.html` — the landing grid: one card per guide
 - One directory per guide, each holding its own `index.html` viewer and a
-  `pages/` folder of page images:
+  `pages/` folder of page images (`tutorial/` is the exception — it holds a
+  video and its poster frame instead):
 
   | Directory | Guide | Pages |
   | --- | --- | --- |
   | `playbook/` | Domino™ In-Store Training Playbook | 11 |
+  | `tutorial/` | Domino™ Product Tutorial Video | video, 4:30 |
   | `domino-job-aids/` | Domino™ Job Aids & Cards | 6 |
   | `domino-ordering/` | Domino™ Ordering Guides | 3 |
   | `essentials/` | In-Store Training Essentials | 54 |

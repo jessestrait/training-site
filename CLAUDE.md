@@ -38,6 +38,18 @@ This applies to any new page added to this repo. All of jessestrait's sites (jes
   so wide pages display correctly as-is.
 - Blank pages in a source PDF are skipped rather than rendered.
 
+## Video
+
+`tutorial/` is the one guide that isn't page images: a self-hosted MP4 plus a
+poster frame, played by a `<video>` tag. Keep self-hosted video small — the repo
+carries it forever, and GitHub rejects any file over 100 MB. macOS `avconvert`
+is the only transcoder installed and it has no bitrate control, so its presets
+jump straight from 568×320/28 MB to 960×540/243 MB with nothing usable between;
+anything better needs ffmpeg. Encode fast-start (`moov` before `mdat`, which
+`avconvert` does by default) or seeking breaks. Note that `python3 -m http.server`
+ignores Range requests, so scrubbing always fails in local preview and works on
+Pages — don't chase that as a bug.
+
 ## The sidebar index is the point
 
 Each viewer's sidebar is hand-built, never generated: `.grp` section headings over
