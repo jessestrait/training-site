@@ -118,55 +118,80 @@ form.addEventListener("submit", async (e) => {
   cursor.className = "cursor";
   bot.appendChild(cursor);
 
+  let answer = "";
+  const applyData = (jsonStr) => {
+    let d; try { d = JSON.parse(jsonStr); } catch { return; }
+    if (d.type === "content_block_delta" && d.delta && d.delta.type === "text_delta") {
+      answer += d.delta.text;
+      bot.textContent = answer;
+      bot.appendChild(cursor);
+      chat.scrollTop = chat.scrollHeight;
+    } else if (d.type === "error") {
+      throw new Error((d.error && d.error.message) || "stream error");
+    }
+  };
+  const parseBuffer = (buf) => {
+    const events = buf.split("\n\n");
+    const rest = events.pop();
+    for (const evt of events) {
+      const line = evt.split("\n").find((l) => l.startsWith("data:"));
+      if (line) applyData(line.slice(5).trim());
+    }
+    return rest;
+  };
+
+  // 1) The request itself (network / CORS layer).
+  let res;
   try {
-    const res = await fetch(WORKER_ENDPOINT, {
+    res = await fetch(WORKER_ENDPOINT, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ messages: history }),
     });
+  } catch (err) {
+    failMsg(bot, cursor, "Couldn't reach the assistant — " + (err && err.message ? err.message : err));
+    setBusy(false);
+    return;
+  }
 
-    if (!res.ok || !res.body) {
-      let msg = "Request failed (" + res.status + ").";
-      try { const j = await res.json(); if (j.error) msg = j.error; } catch {}
-      failMsg(bot, cursor, msg);
+  // 2) HTTP-level error (the Worker answered, but not 2xx).
+  if (!res.ok) {
+    let msg = "Request failed (" + res.status + ").";
+    try { const j = await res.json(); if (j.error) msg = j.error; } catch {}
+    failMsg(bot, cursor, msg);
+    setBusy(false);
+    return;
+  }
+
+  // 3) Read the answer. Stream it when supported; otherwise read it whole
+  //    (older iOS Safari lacks fetch response streaming).
+  try {
+    if (res.body && typeof res.body.getReader === "function") {
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        buf = parseBuffer(buf);
+      }
+      if (buf) parseBuffer(buf + "\n\n");
+    } else {
+      const full = await res.text();
+      parseBuffer(full.endsWith("\n\n") ? full : full + "\n\n");
+    }
+  } catch (err) {
+    if (!answer) {
+      failMsg(bot, cursor, "Connection interrupted — " + (err && err.message ? err.message : err));
       setBusy(false);
       return;
     }
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buf = "", answer = "";
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const events = buf.split("\n\n");
-      buf = events.pop(); // keep the trailing partial
-      for (const evt of events) {
-        const line = evt.split("\n").find((l) => l.startsWith("data:"));
-        if (!line) continue;
-        let data;
-        try { data = JSON.parse(line.slice(5).trim()); } catch { continue; }
-        if (data.type === "content_block_delta" && data.delta?.type === "text_delta") {
-          answer += data.delta.text;
-          bot.textContent = answer;
-          bot.appendChild(cursor);
-          chat.scrollTop = chat.scrollHeight;
-        } else if (data.type === "error") {
-          failMsg(bot, cursor, data.error?.message || "Stream error.");
-          setBusy(false);
-          return;
-        }
-      }
-    }
-
-    cursor.remove();
-    if (!answer) { bot.classList.add("err"); bot.textContent = "No answer returned."; }
-    else history.push({ role: "assistant", content: answer });
-  } catch (err) {
-    failMsg(bot, cursor, "Network error — is the assistant backend reachable?");
   }
+
+  cursor.remove();
+  if (!answer) { bot.classList.add("err"); bot.textContent = "No answer returned."; }
+  else history.push({ role: "assistant", content: answer });
   setBusy(false);
 });
 
