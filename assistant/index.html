@@ -9,7 +9,10 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{background:var(--ink);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;touch-action:manipulation}
-header{padding:40px 24px 28px;text-align:center;border-bottom:1px solid var(--line)}
+header{position:relative;padding:40px 24px 28px;text-align:center;border-bottom:1px solid var(--line)}
+.langsw{position:absolute;top:14px;right:14px;display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.langsw button{background:transparent;border:none;color:var(--dim);font-family:'Poppins',sans-serif;font-weight:800;font-size:11px;letter-spacing:1px;padding:7px 12px;cursor:pointer;transition:background .15s,color .15s}
+.langsw button.on{background:var(--blue);color:#fff}
 header b{font-family:'Poppins',sans-serif;font-weight:900;font-size:clamp(24px,4.5vw,36px);display:block;line-height:1.1;color:var(--hblue)}
 header b span{color:var(--red)}
 header small{color:var(--dim);font-weight:700;font-size:12px;letter-spacing:2px;display:block;margin-top:10px}
@@ -39,6 +42,8 @@ footer{text-align:center;padding:16px;color:var(--dim);font-size:11px;letter-spa
   header{padding:22px 16px 14px}
   header b{font-size:23px}
   header small{font-size:10px;letter-spacing:1.2px;margin-top:7px}
+  .langsw{top:10px;right:10px}
+  .langsw button{font-size:10px;padding:6px 10px}
   main{max-width:none;margin:0;padding:0}
   .card{border:none;border-top:1px solid var(--line);border-radius:0;min-height:0}
   .chat{padding:18px 16px;gap:14px}
@@ -52,8 +57,12 @@ footer{text-align:center;padding:16px;color:var(--dim);font-size:11px;letter-spa
 }
 </style></head><body>
 <header>
+<div class="langsw" id="langsw">
+<button type="button" data-lang="en" class="on">EN</button>
+<button type="button" data-lang="es">ES</button>
+</div>
 <b>STORE 9337 <span>ASSISTANT</span></b>
-<small>RAINBOW PIZZA &middot; ASK THE TRAINING MATERIALS</small>
+<small id="subtitle">RAINBOW PIZZA &middot; ASK THE TRAINING MATERIALS</small>
 </header>
 <main>
 <div class="card">
@@ -73,7 +82,7 @@ footer{text-align:center;padding:16px;color:var(--dim);font-size:11px;letter-spa
   </form>
 </div>
 </main>
-<footer>Internal training tool &middot; Store 9337</footer>
+<footer id="footer">Internal training tool &middot; Store 9337</footer>
 
 <script>
 // Where the serverless backend lives. Local preview auto-targets the dev harness;
@@ -83,6 +92,43 @@ const WORKER_ENDPOINT =
     ? "http://localhost:8788"
     : "https://training-assistant.jessestrait.workers.dev";
 
+// UI strings per language. The training corpus itself stays in English — the
+// assistant translates its answer, so only the interface needs these.
+const I18N = {
+  en: {
+    subtitle: "RAINBOW PIZZA · ASK THE TRAINING MATERIALS",
+    placeholder: "Ask a training question…",
+    send: "Send",
+    footer: "Internal training tool · Store 9337",
+    chips: [
+      "What's the walk-in cooler temperature range?",
+      "How many pizzas are graded on an OA?",
+      "What's the minimum end-bake temperature?",
+      "What's the max cash in a single till?",
+    ],
+    errReach: "Couldn't reach the assistant — ",
+    errHttp: (s) => "Request failed (" + s + ").",
+    errRead: "Couldn't read the response — ",
+    errNone: "No answer returned.",
+  },
+  es: {
+    subtitle: "RAINBOW PIZZA · CONSULTA LOS MATERIALES DE CAPACITACIÓN",
+    placeholder: "Haz una pregunta sobre la capacitación…",
+    send: "Enviar",
+    footer: "Herramienta interna de capacitación · Tienda 9337",
+    chips: [
+      "¿Cuál es el rango de temperatura del cuarto frío?",
+      "¿Cuántas pizzas se evalúan en un OA?",
+      "¿Cuál es la temperatura mínima al salir del horno?",
+      "¿Cuál es el máximo de efectivo en una sola caja?",
+    ],
+    errReach: "No se pudo conectar con el asistente — ",
+    errHttp: (s) => "La solicitud falló (" + s + ").",
+    errRead: "No se pudo leer la respuesta — ",
+    errNone: "No se recibió respuesta.",
+  },
+};
+
 const chat = document.getElementById("chat");
 const intro = document.getElementById("intro");
 const form = document.getElementById("form");
@@ -90,6 +136,36 @@ const input = document.getElementById("input");
 const send = document.getElementById("send");
 const history = []; // [{role, content}]
 let busy = false;
+
+let lang = "en";
+try { const saved = localStorage.getItem("assistantLang"); if (saved === "es" || saved === "en") lang = saved; } catch {}
+let T = I18N[lang];
+
+function applyLang(next) {
+  lang = next;
+  T = I18N[lang];
+  try { localStorage.setItem("assistantLang", lang); } catch {}
+  document.documentElement.lang = lang;
+  document.getElementById("subtitle").textContent = T.subtitle;
+  document.getElementById("footer").textContent = T.footer;
+  input.placeholder = T.placeholder;
+  send.textContent = T.send;
+  // Example questions only exist before the first message is sent.
+  const chipWrap = document.getElementById("chips");
+  if (chipWrap) {
+    chipWrap.querySelectorAll(".chip").forEach((c, i) => { if (T.chips[i]) c.textContent = T.chips[i]; });
+  }
+  document.querySelectorAll("#langsw button").forEach((b) => {
+    b.classList.toggle("on", b.dataset.lang === lang);
+  });
+}
+
+document.getElementById("langsw").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-lang]");
+  if (btn && btn.dataset.lang !== lang) applyLang(btn.dataset.lang);
+});
+
+applyLang(lang);
 
 document.getElementById("chips").addEventListener("click", (e) => {
   if (e.target.classList.contains("chip")) { input.value = e.target.textContent; input.focus(); autosize(); }
@@ -126,17 +202,17 @@ form.addEventListener("submit", async (e) => {
     res = await fetch(WORKER_ENDPOINT, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ messages: history }),
+      body: JSON.stringify({ messages: history, lang }),
     });
   } catch (err) {
-    failMsg(bot, cursor, "Couldn't reach the assistant — " + (err && err.message ? err.message : err));
+    failMsg(bot, cursor, T.errReach + (err && err.message ? err.message : err));
     setBusy(false);
     return;
   }
 
   // 2) HTTP-level error (the Worker answered, but not 2xx).
   if (!res.ok) {
-    let msg = "Request failed (" + res.status + ").";
+    let msg = T.errHttp(res.status);
     try { const j = await res.json(); if (j.error) msg = j.error; } catch {}
     failMsg(bot, cursor, msg);
     setBusy(false);
@@ -150,7 +226,7 @@ form.addEventListener("submit", async (e) => {
   try {
     raw = await res.text();
   } catch (err) {
-    failMsg(bot, cursor, "Couldn't read the response — " + (err && err.message ? err.message : err));
+    failMsg(bot, cursor, T.errRead + (err && err.message ? err.message : err));
     setBusy(false);
     return;
   }
@@ -164,7 +240,7 @@ form.addEventListener("submit", async (e) => {
     else if (d.type === "error") streamErr = (d.error && d.error.message) || "The assistant returned an error.";
   }
 
-  if (!answer) { failMsg(bot, cursor, streamErr || "No answer returned."); setBusy(false); return; }
+  if (!answer) { failMsg(bot, cursor, streamErr || T.errNone); setBusy(false); return; }
 
   // 4) Render the answer.
   cursor.remove();
