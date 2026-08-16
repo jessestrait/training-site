@@ -145,14 +145,38 @@ const send = document.getElementById("send");
 const history = []; // [{role, content}]
 let busy = false;
 
+// Language preference, most durable source first. The URL wins because it
+// survives a reload even when storage is restricted (iOS Private Browsing) —
+// Safari reloads pages on its own after app switches or memory pressure, which
+// otherwise dropped the choice back to English.
+const isLang = (v) => v === "es" || v === "en";
 let lang = "en";
-try { const saved = localStorage.getItem("assistantLang"); if (saved === "es" || saved === "en") lang = saved; } catch {}
+try {
+  const fromQuery = new URLSearchParams(location.search).get("lang");
+  const fromHash = new URLSearchParams(location.hash.replace(/^#/, "")).get("lang");
+  const saved = localStorage.getItem("assistantLang");
+  if (isLang(fromQuery)) lang = fromQuery;
+  else if (isLang(fromHash)) lang = fromHash;
+  else if (isLang(saved)) lang = saved;
+} catch {}
 let T = I18N[lang];
 
 function applyLang(next) {
   lang = next;
   T = I18N[lang];
   try { localStorage.setItem("assistantLang", lang); } catch {}
+  // Mirror it into the URL so a Safari-initiated reload keeps the choice.
+  // Prefer a clean ?lang= via replaceState; fall back to the hash where
+  // replaceState isn't available (setting the hash never reloads the page).
+  try {
+    if (typeof history.replaceState === "function") {
+      const u = new URL(location.href);
+      u.searchParams.set("lang", lang);
+      history.replaceState(null, "", u);
+    } else if (location.hash !== "#lang=" + lang) {
+      location.hash = "lang=" + lang;
+    }
+  } catch {}
   document.documentElement.lang = lang;
   document.getElementById("subtitle").textContent = T.subtitle;
   document.getElementById("footer").textContent = T.footer;
